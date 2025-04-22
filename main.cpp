@@ -73,52 +73,7 @@ int main()
     delete[] pixelData;
     pixelData = nullptr;
 
-
-    // en esta parte voy a cargar ls datos  I_D.bmp, I_M.bmp, M2.txt para hacer las
-    // las pruebas de transformación
-
-    // cargar la imagen aleatoria (I_M.bmp)
-    int ancho_IM = 0;
-    int alto_IM = 0;
-    unsigned char* pixeles_IM = loadPixels("I_M.bmp", ancho_IM, alto_IM );
-    if (pixeles_IM == nullptr){
-        cout << "Error: No se pudo cargar la imagen aleatoria I_M.bmp" << endl;
-        return 1;
-    }
-
-    // Cargar la imagen transformada (I_D.bmp)
-    int ancho_ID = 0;
-    int alto_ID = 0;
-    unsigned char* pixeles_ID = loadPixels("I_D.bmp", ancho_ID, alto_ID);
-    if (pixeles_ID == nullptr) {
-        cout << "Error al cargar la imagen transformada I_D.bmp" << endl;
-        delete[] pixeles_ID;
-        return 1;
-    }
-
-    // cargar el archivo de enmascaramiento M2.txt
-    int semilla_M2 = 0;
-    int n_pixeles_M2 = 0;
-    unsigned int* pixeles_mascara = loadSeedMasking("M2.txt", semilla_M2,          n_pixeles_M2);
-    if (pixeles_mascara == nullptr) {
-        cout << "Error al cargar el archivo de enmascaramiento M2.txt" << endl;
-        delete[] pixeles_IM;
-        delete[] pixeles_ID;
-        return 1;
-    }
-
-    // liberar memoria
-    delete[] pixeles_IM;
-    delete[] pixeles_ID;
-    delete[] pixeles_mascara;
-
-
-
-
-
-
-
-    // Variables para almacenar la semilla y el número de píxeles leídos del archivo de enmascaramiento
+// Variables para almacenar la semilla y el número de píxeles leídos del archivo de enmascaramiento
     int seed = 0;
     int n_pixels = 0;
 
@@ -138,6 +93,70 @@ int main()
         delete[] maskingData;
         maskingData = nullptr;
     }
+
+    /* en esta parte voy a cargar los datos  I_D.bmp, I_M.bmp, M2.txt etc para hacer las pruebas de transformación */
+
+
+    // cargar la imagen aleatoria (I_M.bmp)
+    int ancho_IM = 0;
+    int alto_IM = 0;
+    unsigned char* pixeles_IM = loadPixels("I_M.bmp", ancho_IM, alto_IM );
+    if (pixeles_IM == nullptr){
+        cout << "Error: No se pudo cargar la imagen aleatoria I_M.bmp" << endl;
+        return 1;
+    }
+
+    // Cargar la imagen transformada (I_D.bmp)
+    int ancho_ID = 0;
+    int alto_ID = 0;
+    unsigned char* pixeles_ID = loadPixels("I_D.bmp", ancho_ID, alto_ID);
+    if (pixeles_ID == nullptr) {
+        cout << "Error al cargar la imagen transformada I_D.bmp" << endl;
+        delete[] pixeles_IM;
+        return 1;
+
+    }
+
+    if (ancho_IM != ancho_ID || alto_IM != alto_ID) {
+        cout << "Error: Las imágenes deben tener las mismas dimensiones." << endl;
+        delete[] pixeles_IM;
+        delete[] pixeles_ID;
+        return 1;
+    }
+
+    // cargar el archivo de enmascaramiento M2.txt
+    int semilla_M2 = 0;
+    int n_pixeles_M2 = 0;
+    unsigned int* datos_M2 = loadSeedMasking("M2.txt", semilla_M2,          n_pixeles_M2);
+    if (datos_M2 == nullptr) {
+        cout << "Error al cargar el archivo de enmascaramiento M2.txt" << endl;
+        delete[] pixeles_IM;
+        delete[] pixeles_ID;
+        return 1;
+    }
+
+    /* Una vez cargada las imagenes voy a hacer las operaciones a nivel de bits*/
+
+    // aplicar XOR entre la imagen aleatoria (I_M.bmp) y la imagen transformada (I_D.bmp)
+    aplicarXor(pixeles_ID, pixeles_IM, ancho_ID * alto_ID * 3);
+    // exportar la operación XOR
+    exportImage(pixeles_ID, ancho_ID, alto_ID, "operacion_xor.bmp");
+
+    // aplicar enmascaramiento
+    unsigned char* resultado_enmascaramiento = new unsigned char[n_pixeles_M2 * 3];
+    enmascaramiento(pixeles_ID, pixeles_IM, resultado_enmascaramiento, ancho_ID, alto_ID, semilla_M2, ancho_IM, alto_IM);
+
+    // comparar el enmascaramiento con los .txt
+    compararEnmascaramiento(resultado_enmascaramiento, datos_M2, n_pixeles_M2);
+
+
+
+    // liberar memoria
+    delete[] pixeles_IM;
+    delete[] pixeles_ID;
+    delete[] datos_M2;
+    delete[] resultado_enmascaramiento;
+
 
     return 0; // Fin del programa
 }
@@ -313,7 +332,6 @@ unsigned int* loadSeedMasking(const char* nombreArchivo, int &seed, int &n_pixel
     // Retornar el puntero al arreglo con los datos RGB
     return RGB;
 }
-
 
 
 

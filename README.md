@@ -45,3 +45,7 @@ que si la imagen tiene 900 píxeles y la máscara tiene 2o elementos, la semilla
 Entedí que los archivos .txt me sirven para verificar si las transformaciones que estoy haciendo son correctas, son como una pista que van diciendo si voy bien o no.
 Estos archivos los uso de la sigueinte forma:
 cuando aplico una transformación sobre la imagen, a esa transformación la sumo con las máscara usando la simsma semilla del .txt y comparo los resultados con los valores que están el .txt
+
+## problema presentado.
+En este punto comparé todas las transformaciones posibles y ninguna me coinidió con la máscara, quizás la esté comparando mal. Lo que estoy haciendo es cargar la imagen transformada I_D, aplicarle una transformación y a esa imagen que me da despues de la tranfomación la exporto como (rotar_derecha.bmp, desplazar_izquierda.bmp, operacion_xor.bmp etc) dependiendo de la transformación que le esté haciendo, la guardo con el nombre ( esa seria la segunda transformación equivalente a la p2.bmp del caso 1), a esa imagen tranformada le estoy sumando la maáscara (M.bmp) a partir de la semilla y ese resultado lo comparo con M2.txt.
+La duda que tengo en estos moentos es si habia que sumar esa máscara o tendria que restarla, voy a intentar restar la máscara y ver el resultado.

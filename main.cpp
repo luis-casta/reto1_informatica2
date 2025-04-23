@@ -73,7 +73,7 @@ int main()
     delete[] pixelData;
     pixelData = nullptr;
 
-// Variables para almacenar la semilla y el número de píxeles leídos del archivo de enmascaramiento
+    // Variables para almacenar la semilla y el número de píxeles leídos del archivo de enmascaramiento
     int seed = 0;
     int n_pixels = 0;
 
@@ -93,6 +93,8 @@ int main()
         delete[] maskingData;
         maskingData = nullptr;
     }
+
+
 
     /* en esta parte voy a cargar los datos  I_D.bmp, I_M.bmp, M2.txt etc para hacer las pruebas de transformación */
 
@@ -127,7 +129,7 @@ int main()
     // cargar el archivo de enmascaramiento M2.txt
     int semilla_M2 = 0;
     int n_pixeles_M2 = 0;
-    unsigned int* datos_M2 = loadSeedMasking("M2.txt", semilla_M2,          n_pixeles_M2);
+    unsigned int* datos_M2 = loadSeedMasking("M2.txt", semilla_M2, n_pixeles_M2);
     if (datos_M2 == nullptr) {
         cout << "Error al cargar el archivo de enmascaramiento M2.txt" << endl;
         delete[] pixeles_IM;
@@ -135,16 +137,64 @@ int main()
         return 1;
     }
 
+    // cargar la máscara (M.bmp)
+    int ancho_M = 0;
+    int alto_M = 0;
+    unsigned char* pixeles_mascara = loadPixels("M.bmp", ancho_M, alto_M );
+    if (pixeles_mascara == nullptr){
+        cout << "Error: No se pudo cargar la imagen aleatoria I_M.bmp" << endl;
+        delete[] pixeles_ID;
+        delete[] pixeles_IM;
+        return 1;
+    }
+
+
     /* Una vez cargada las imagenes voy a hacer las operaciones a nivel de bits*/
 
     // aplicar XOR entre la imagen aleatoria (I_M.bmp) y la imagen transformada (I_D.bmp)
-    aplicarXor(pixeles_ID, pixeles_IM, ancho_ID * alto_ID * 3);
+   //aplicarXor(pixeles_ID, pixeles_IM, ancho_ID * alto_ID * 3);
     // exportar la operación XOR
-    exportImage(pixeles_ID, ancho_ID, alto_ID, "operacion_xor.bmp");
+    //exportImage(pixeles_ID, ancho_ID, alto_ID, "operacion_xor.bmp");
 
-    // aplicar enmascaramiento
-    unsigned char* resultado_enmascaramiento = new unsigned char[n_pixeles_M2 * 3];
-    enmascaramiento(pixeles_ID, pixeles_IM, resultado_enmascaramiento, ancho_ID, alto_ID, semilla_M2, ancho_IM, alto_IM);
+
+    // calcular el total de bytes de la imagen
+      int total_bytes = ancho_ID * alto_ID * 3;
+
+    // craer copia antes de modificar los pixeles de I_D.bmp
+    unsigned char* copia_ID = new unsigned char[total_bytes];
+    for (int i = 0; i < total_bytes; ++i) {
+        copia_ID[i] = pixeles_ID[i];
+    }
+
+    /* comprobación de operaciones */
+
+    // aplicar rotación de  bits a la derecha a imagen tranformada (I_M)
+    //rotarImagenDerecha(copia_ID, total_bytes);
+    // exportar imagen
+    //exportImage(copia_ID, ancho_ID, alto_ID, "rotacion_derecha.bmp");
+
+    // aolicar rotacion  a la izquierda
+    //rotarImagenIzquierda(copia_ID, total_bytes);
+    // expotar imagen
+    //exportImage(copia_ID, ancho_ID, alto_ID, "rotacion_izquierda.bmp");
+
+    // aplicar desplazamiento derecha
+    //DesplzarDerecha(copia_ID, total_bytes);
+    // exportar imagen
+    //exportImage(copia_ID, ancho_ID, alto_ID,"desplazar_derecha.bmp");
+
+    //aplicar desplazamiento izquierda
+    DesplazarIzquierda(copia_ID, total_bytes);
+    //exportar imagen
+    exportImage(copia_ID, ancho_ID, alto_ID, "desplzar_izquierda.bmp");
+
+
+
+    // aplicar enmascaramiento entre imagen transformada (I_D.bmp) y mascara (M.bmp)
+    unsigned char* resultado_enmascaramiento = new unsigned char[ancho_M * alto_M * 3];
+    enmascaramiento(copia_ID, pixeles_mascara, resultado_enmascaramiento, ancho_ID, alto_ID, semilla_M2, ancho_M, alto_M);
+
+
 
     // comparar el enmascaramiento con los .txt
     compararEnmascaramiento(resultado_enmascaramiento, datos_M2, n_pixeles_M2);
@@ -154,8 +204,11 @@ int main()
     // liberar memoria
     delete[] pixeles_IM;
     delete[] pixeles_ID;
+    delete[] pixeles_mascara;
     delete[] datos_M2;
     delete[] resultado_enmascaramiento;
+
+
 
 
     return 0; // Fin del programa
@@ -332,7 +385,6 @@ unsigned int* loadSeedMasking(const char* nombreArchivo, int &seed, int &n_pixel
     // Retornar el puntero al arreglo con los datos RGB
     return RGB;
 }
-
 
 
 

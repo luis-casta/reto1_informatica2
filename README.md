@@ -8,10 +8,10 @@ Este es el primer análisis y la posible solución del reto 1 de informatica 2.
 - M (mascara), imagen pequeña usada para el enmascaramiento depúes de cada transformación. Esta mascara se suma con la imagen transformada y el resultado se guradan en archivos .txt)
 - Archivos de enmascaramiento(M1.txt, M2.txt), los cuales contienen la semilla (valor entero que me indica de que punto empiezo a hacer la mascara) y los resultados de las sumas ID(k+s) + M(k) → contienen la suma de los RGB píxel a píxel 
 - K. índice que recorre la mascara valor por valor.
-- Dos conjuntos de archivos que representan dos posibles entradas y salidas del sistema.(los archivos del caso 1 muietran los resultados despues de aplicar en primer lugar XOR entre la imagen origial (I_O,bmp) y la imagen aleatoria (I_M.bmp), al resultado de esa imagen se le aplicó una rotación de 3 bits a la derecha, y al resultado de esa imagen se le aplico un XOR, y ese resultado es lo que tenemos en el archivo p3.bmp)
+- Dos conjuntos de archivos que representan dos posibles entradas y salidas del sistema.(los archivos del caso 1 muestran los resultados despues de aplicar en primer lugar XOR entre la imagen origial (I_O,bmp) y la imagen aleatoria (I_M.bmp), al resultado de esa imagen se le aplicó una rotación de 3 bits a la derecha, y al resultado de esa imagen se le aplico un XOR, y ese resultado es lo que tenemos en el archivo p3.bmp)
 
 ## lo que entiendo que hay que hacer 
-La imagen original fué modificada mediante una serie de transformaciones a nivel de bits, que incluyen desplazamientos, rotaciones y XOR, en un orden desconocido, con una imagen de distorción generada automaticamente.
+La imagen original fué modificada mediante una serie de transformaciones a nivel de bits, que incluyen desplazamientos, rotaciones y XOR, en un orden desconocido, con una imagen de distorción generada automaticamente (IM.bmp).
 Despues de cada tranformación se aplicó una mascara sobre una porción de la imagen, a partir de una semilla aleatoria, esta operación se hizo sumando valor por valor de color RGB usando la siguiente formula:
 s(k) = ID(k + s) + M(k)
 donde sk(es el resultado que se guarda en el .txt), ID(es la imagen tranformada parcial), k(es el índice que recorre la mascara), s(es la semilla), M(es la mascara).

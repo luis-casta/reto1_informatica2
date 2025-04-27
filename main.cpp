@@ -122,10 +122,10 @@ int main()
 
 
     // cargar el archivo de enmascaramiento M2.txt
-    int semilla_M1 = 0;
-    int n_pixeles_M1 = 0;
-    unsigned int* datos_M1 = loadSeedMasking("M2.txt", semilla_M1, n_pixeles_M1);
-    if (datos_M1 == nullptr) {
+    int semilla_M2 = 0;
+    int n_pixeles_M2 = 0;
+    unsigned int* datos_M2 = loadSeedMasking("M2.txt", semilla_M2, n_pixeles_M2);
+    if (datos_M2 == nullptr) {
         cout << "Error al cargar el archivo de enmascaramiento M2.txt" << endl;
         delete[] pixeles_IM;
         delete[] pixeles_ID;
@@ -140,7 +140,7 @@ int main()
         cout << "Error: No se pudo cargar la imagen aleatoria I_M.bmp" << endl;
         delete[] pixeles_ID;
         delete[] pixeles_IM;
-        delete[] datos_M1;
+        delete[] datos_M2;
         return 1;
     }
 
@@ -152,23 +152,31 @@ int main()
     int total_bytes_mascara = ancho_M * alto_M * 3;
 
     // aplicar XOR entre la imagen aleatoria (I_M.bmp) y la imagen transformada (I_D.bmp)
-    aplicarXor(pixeles_ID, pixeles_IM, ancho_ID * alto_ID * 3);
+    aplicarXor(pixeles_ID, pixeles_IM, total_bytes_ID);
     // exportar la operación XOR
-    exportImage(pixeles_ID, ancho_ID, alto_ID, "p2.bmp");
+    //exportImage(pixeles_ID, ancho_ID, alto_ID, "p2_recuperada.bmp");
+    //rotarImagenIzquierda(pixeles_ID, total_bytes_ID);
+
+    //aplicarXor(pixeles_ID, pixeles_IM, total_bytes_ID);
+
+   // exportImage(pixeles_ID, ancho_ID, alto_ID,"IO_recontruida.bmp");
 
     // caragar la imagen (operación_xor.bmp)
-    int ancho_OX = 0;
+    /*int ancho_OX = 0;
     int alto_OX = 0;
-    unsigned char* pixeles_operacion_xor = loadPixels("p2.bmp", ancho_OX, alto_OX );
+    unsigned char* pixeles_operacion_xor = loadPixels("operacion_xor.bmp", ancho_OX, alto_OX );
     if (pixeles_operacion_xor == nullptr){
         cout << "Error: No se pudo cargar la imagen p2.bmp" << endl;
         delete[] pixeles_mascara;
         delete[] pixeles_operacion_xor;
+        delete[] datos_M2;
+        delete[]pixeles_ID;
+        delete[] pixeles_IM;
         return 1;
-    }
+    }*/
 
     // dimensiones de operacion_xor.bmp
-   //int total_bytes_xor = ancho_OX * alto_OX * 3;
+    //int total_bytes_xor = ancho_OX * alto_OX * 3;
 
 
 
@@ -190,7 +198,7 @@ int main()
     //exportImage(copia_ID, ancho_ID, alto_ID,"desplazar_derecha.bmp");
 
     //aplicar desplazamiento izquierda
-   //DesplazarIzquierda(pixeles_ID, total_bytes);
+    //DesplazarIzquierda(pixeles_ID, total_bytes);
     //exportar imagen
     //exportImage(pixeles_ID, ancho_ID, alto_ID, "desplzar_izquierda.bmp");
 
@@ -199,16 +207,16 @@ int main()
     // aplicar enmascaramiento entre imagen transformada  y mascara (M.bmp)
     unsigned int* resultado_enmascaramiento = new unsigned int[total_bytes_mascara];
     for (int k = 0; k < total_bytes_mascara; ++k) {
-        int indice = (semilla_M1 + k) % total_bytes_ID;
-        resultado_enmascaramiento[k] = (unsigned int)pixeles_operacion_xor[indice] + (unsigned int) pixeles_mascara[k];
+        int indice = (semilla_M2 + k) % total_bytes_ID;
+        resultado_enmascaramiento[k] = (unsigned int)pixeles_ID[indice] + (unsigned int) pixeles_mascara[k];
 
     }
 
 
     // comparar la máscara con el .txt
     bool coincide = true;
-    for (int k = 0; k < n_pixeles_M1 * 3; ++k) {
-        if(resultado_enmascaramiento[k] != datos_M1[k]){
+    for (int k = 0; k < n_pixeles_M2 * 3; ++k) {
+        if(resultado_enmascaramiento[k] != datos_M2[k]){
             coincide = false;
             break;
 
@@ -245,13 +253,13 @@ int main()
 
 
 
-   // liberar memoria
+    // liberar memoria
     delete[] pixeles_IM;
     delete[] pixeles_ID;
     delete[] pixeles_mascara;
-    delete[] datos_M1;
+    delete[] datos_M2;
     delete[] resultado_enmascaramiento;
-    delete[] pixeles_operacion_xor;
+
 
 
 
@@ -430,7 +438,6 @@ unsigned int* loadSeedMasking(const char* nombreArchivo, int &seed, int &n_pixel
     // Retornar el puntero al arreglo con los datos RGB
     return RGB;
 }
-
 
 
 

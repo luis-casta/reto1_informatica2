@@ -49,3 +49,13 @@ cuando aplico una transformación sobre la imagen, a esa transformación la sumo
 ## problema presentado.
 En este punto comparé todas las transformaciones posibles y ninguna me coinidió con la máscara, quizás la esté comparando mal. Lo que estoy haciendo es cargar la imagen transformada I_D, aplicarle una transformación y a esa imagen que me da despues de la tranfomación la exporto como (rotar_derecha.bmp, desplazar_izquierda.bmp, operacion_xor.bmp etc) dependiendo de la transformación que le esté haciendo, la guardo con el nombre ( esa seria la segunda transformación equivalente a la p2.bmp del caso 1), a esa imagen tranformada le estoy sumando la maáscara (M.bmp) a partir de la semilla y ese resultado lo comparo con M2.txt.
 La duda que tengo en estos moentos es si habia que sumar esa máscara o tendria que restarla, voy a intentar restar la máscara y ver el resultado.
+
+## Nota:
+cambié la forma en la que estaba haciendo el enmascaramiento, cuando hice XOR entre I_M.bmp e I_D.bmp y a esa imagen p2,bmp le sume la maascara M.bmp, al comparar el resultado, la diferencia entre las sumas era de 8 en todos los píxeles, es lo más cerca que he estado en todo el reto.
+
+## Reflexión final
+Aunque no logré reconstruir la imagen original(lo más cerca que estuve era una discrepancia de 8 pixeles) este ejercicio aunque técnicamente  fue desafiante es de gran valor para mi aparndizaje, me ayudó a entender de mejor forma en que casos puedo usar arreglos dinamicos y la ventaja de estos sobre los arreglos estaticos. También aprendí a gestinoar la memoria a asignar con new y liberar con delete. Me pareció muy interesante el hecho de como podemos manipular directamente los pixeles mediante operaciones a nivel de bit.
+
+## cosas a tener en cuenta para proximos desafios 
+Analizar de mejor forma la información proporcionada, talvez me faltó sintetizar de mejor forma el caso 1 con el caso 2 y ver si habia alguna relación entre ellos.
+
